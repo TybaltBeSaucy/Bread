@@ -1,3 +1,0 @@
-Take a look at over_under.py and figure out why theres no data being processed. Check script.js, home.html and main.py. There should be calculatons outputted by the program.
-
-HERE IS the result the user constantly gets 'No data found for Houston Texans with 55.0 in the calculated range.' which suggests no data is being used in the program note data is being pulled frm a .csv file
