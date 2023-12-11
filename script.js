@@ -60,3 +60,63 @@ populateTable('liveEventsTable', liveEventsData);
 populateTable('userProfileTable', userProfileData);
 populateTable('playerMetricsTable', playerMetricsData);
 populatePlayerMetricsTable();
+
+document.getElementById('runSpreadButton').addEventListener('click', function() {
+    // Get form data
+    var spread_favorite_input = document.getElementById('spread_favorite_input').value;
+    var favorite_team_input = document.getElementById('favorite_team_input').value;
+    var underdog_input = document.getElementById('underdog_input').value;
+    var is_team_favorite_home = document.getElementById('is_team_favorite_home').value.toLowerCase() === 'yes';
+
+    // Create data object
+    var data = {
+        spread_favorite_input: spread_favorite_input,
+        favorite_team_input: favorite_team_input,
+        underdog_input: underdog_input,
+        is_team_favorite_home: is_team_favorite_home
+    };
+
+    // Send POST request
+    fetch('/run_spread', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the output
+        document.getElementById('spreadOutput').textContent = data.output;
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+document.getElementById('runOverUnderButton').addEventListener('click', function() {
+    // Get form data
+    var home_team = document.getElementById('home_team').value;
+    console.log(`home_team: ${home_team}`);  // Added console.log to check value
+    var your_single_number = document.getElementById('your_single_number').value;
+    console.log(`your_single_number: ${your_single_number}`);  // Added console.log to check value
+
+    // Create data object
+    var data = {
+        home_team: home_team,
+        your_single_number: your_single_number
+    };
+
+    // Send POST request
+    fetch('/run_over_under', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the output
+        document.getElementById('overUnderOutput').textContent = data.output;
+    })
+    .catch(error => console.error('Error:', error));
+});

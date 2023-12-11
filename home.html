@@ -128,39 +128,51 @@
 
             window.onload = populatePlayerMetricsTable;
         </script>
-        <div class="card graph-card">
-            <h1>Player Metrics with Over/Under Percentage</h1>
-
-            <div class="card">
-                <h2>Run Spread.py</h2>
-                <form id="spreadForm">
-                    <label for="spread_favorite_input">Spread:</label><br>
-                    <input type="text" id="spread_favorite_input" name="spread_favorite_input"><br>
-                    <label for="favorite_team_input">Favorite Team:</label><br>
-                    <input type="text" id="favorite_team_input" name="favorite_team_input"><br>
-                    <label for="underdog_input">Underdog Team:</label><br>
-                    <input type="text" id="underdog_input" name="underdog_input"><br>
-                    <label for="is_team_favorite_home">Is Favorite Team Home? (yes/no):</label><br>
-                    <input type="text" id="is_team_favorite_home" name="is_team_favorite_home"><br>
-                    <input type="submit" value="Run">
+            <div class="card" style="grid-column: span 2;">
+                    <h1>Calculate the Spread</h1>
+                    <form id="spreadForm">
+                    <label for="spread_favorite_input"><strong>Spread:</strong></label><br>
+                    <input type="text" id="spread_favorite_input" name="spread_favorite_input" required><br>
+                    <label for="favorite_team_input"><strong>Favorite Team:</label><br>
+                    <input type="text" id="favorite_team_input" name="favorite_team_input" required><br>
+                    <label for="underdog_input"><strong>Underdog Team:</strong></label><br>
+                    <input type="text" id="underdog_input" name="underdog_input" required><br>
+                    <label for="is_team_favorite_home"><strong>Is Favorite Team Home? (yes/no):</strong></label><br>
+                    <input type="text" id="is_team_favorite_home" name="is_team_favorite_home" required><br>
+                    <button id="runButton" type="button">Run</button>
                 </form>
                 <div id="spreadOutput"></div>
             </div>
-            <script>
-    document.getElementById('spreadForm').addEventListener('submit', function(event) {
-        event.preventDefault();
 
+
+        <div class="card" style="grid-column: span 2;">
+            <h1>Calculate Over Under</h1>
+            <form id="overUnderForm">
+                <label for="home_team">Home Team:</label><br>
+                <input type="text" id="home_team" name="home_team" required><br>
+                <label for="your_single_number">Your Single Number:</label><br>
+                <input type="text" id="your_single_number" name="your_single_number" required><br>
+                <button id="runOverUnderButton" type="button">Run</button>
+            </form>
+            <div id="overUnderOutput"></div>
+            </div>
+        </div>
+
+    <script>
+    document.getElementById('runButton').addEventListener('click', function() {
         // Get form data
-        var formData = new FormData(event.target);
+        var spread_favorite_input = document.getElementById('spread_favorite_input').value;
+        var favorite_team_input = document.getElementById('favorite_team_input').value;
+        var underdog_input = document.getElementById('underdog_input').value;
+        var is_team_favorite_home = document.getElementById('is_team_favorite_home').value.toLowerCase() === 'yes';
 
-        // Convert form data to JSON
-        var data = {};
-        formData.forEach(function(value, key) {
-            data[key] = value;
-        });
-
-        // Convert is_team_favorite_home to boolean
-        data['is_team_favorite_home'] = data['is_team_favorite_home'].toLowerCase() === 'yes';
+        // Create data object
+        var data = {
+            spread_favorite_input: spread_favorite_input,
+            favorite_team_input: favorite_team_input,
+            underdog_input: underdog_input,
+            is_team_favorite_home: is_team_favorite_home
+        };
 
         // Send POST request
         fetch('/run_spread', {
@@ -174,9 +186,11 @@
         .then(data => {
             // Display the output
             document.getElementById('spreadOutput').textContent = data.output;
+            // Display the output in an alert box
+            alert(data.output);
         });
     });
-            </script>
+    </script>
 
     <script>
         function populateTable(tableId, data) {
@@ -207,6 +221,37 @@
 
         window.onload = fetchPlayerMetrics;
     </script>
+    <script>
+
+document.getElementById('runOverUnderButton').addEventListener('click', function() {
+    // Get form data
+    var home_team = document.getElementById('home_team').value;
+    var your_single_number = document.getElementById('your_single_number').value;
+
+    // Create data object
+    var data = {
+        home_team: home_team,
+        your_single_number: your_single_number
+    };
+
+    // Send POST request
+    fetch('/run_over_under', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the output
+        document.getElementById('overUnderOutput').textContent = data.output;
+    })
+    .catch(error => console.error('Error:', error));
+});
+    </script>
+
+
         </div>
     </div>
 
